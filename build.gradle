@@ -1,0 +1,64 @@
+plugins {
+    id "com.google.protobuf" version "0.9.3"
+    id 'java'
+
+}
+
+group 'com.programingsquirrel'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.23.3'
+
+    // https://mvnrepository.com/artifact/io.grpc/grpc-all
+    implementation group: 'io.grpc', name: 'grpc-all', version: '1.56.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+sourceSets{
+    main{
+        java{
+            //This is for gRPC
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
+}
+
+protobuf {
+
+    protoc {
+        //Dowload from repositories
+        artifact = 'com.google.protobuf:protoc:3.23.2'
+    }
+    // Locate the codegen plugins
+    plugins {
+
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.56.0'
+        }
+    }
+
+    generateProtoTasks{
+        all()*.plugins{
+            grpc{}
+        }
+    }
+    //generatedFilesBaseDir("$projectDir/src/main/java/com/programingsquirrel/protos")
+
+}
+
+
+
+test {
+    useJUnitPlatform()
+}
